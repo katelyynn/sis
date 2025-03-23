@@ -50,11 +50,12 @@ async def loop():
     if rj['realtime'] == "true":
         status = discord.Status.online
 
+    #await bot.user.edit(nick=rj['track'])
     await bot.change_presence(status=status, activity=discord.CustomActivity(name=f"{rj['track']} - {rj['artist']} ~ {rj['timestamp']}"))
 
 @bot.event
 async def on_ready():
     print (f"{Back.GREEN}{Style.BRIGHT}[ready]{Style.RESET_ALL} authorised as {bot.user}")
-    await loop()
+    loop.start()
 
 bot.run(token)
