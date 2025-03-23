@@ -1,5 +1,6 @@
 {
     "token": "",
     "url": "",
-    "host": 0
+    "host": 0,
+    "seconds": 20
 }

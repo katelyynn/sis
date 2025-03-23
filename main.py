@@ -23,6 +23,7 @@ except FileNotFoundError:
 token = config["token"]
 url = config["url"]
 host = config["host"]
+seconds = config["seconds"]
 
 bot = commands.Bot(command_prefix="?", intents=intents)
 bot.remove_command("help")
@@ -38,8 +39,22 @@ async def now(ctx):
     embed.set_footer(text=rj['timestamp'])
     await ctx.send(embed = embed)
 
+@tasks.loop(seconds=seconds)
+async def loop():
+    await bot.wait_until_ready()
+
+    r = requests.get(url)
+    rj = r.json()
+
+    status = discord.Status.dnd
+    if rj['realtime'] == "true":
+        status = discord.Status.online
+
+    await bot.change_presence(status=status, activity=discord.CustomActivity(name=f"{rj['track']} by {rj['artist']}"))
+
 @bot.event
 async def on_ready():
     print (f"{Back.GREEN}{Style.BRIGHT}[ready]{Style.RESET_ALL} authorised as {bot.user}")
+    await loop()
 
 bot.run(token)
